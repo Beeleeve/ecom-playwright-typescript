@@ -31,7 +31,6 @@ export default defineConfig({
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
   },
-
   projects: [
     // Setup project (runs first, generates storageState)
     {
