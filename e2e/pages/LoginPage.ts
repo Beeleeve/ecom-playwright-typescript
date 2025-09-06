@@ -64,6 +64,9 @@ export class LoginPage {
    * Sign in with provided credentials
    */
   async signIn(email: string, password: string): Promise<void> {
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForLoadState('networkidle');
+    await this.emailInput.isVisible({ timeout: 180000 });
     await this.emailInput.clear();
     await this.emailInput.fill(email);
     await this.passwordInput.clear();
