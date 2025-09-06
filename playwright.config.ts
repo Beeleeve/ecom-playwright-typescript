@@ -49,19 +49,19 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         storageState: STORAGE_STATE,
-      },
+      }
     },
-    {
-      name: 'e2e tests guest user',
-      testIgnore: ['hooks/*.setup.ts'],
-      use: {
-        ...devices['Desktop Chrome'],
-      },
-    },
-    // Extra project for Chrome (optional)
-    {
-      name: 'Google Chrome',
-      use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    },
+    // {
+    //   name: 'e2e tests guest user',
+    //   testIgnore: ['hooks/*.setup.ts'],
+    //   use: {
+    //     ...devices['Desktop Chrome'],
+    //   },
+    // },
+    // // Extra project for Chrome (optional)
+    // {
+    //   name: 'Google Chrome',
+    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+    // },
   ],
 });
