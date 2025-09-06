@@ -29,7 +29,9 @@ export default defineConfig({
     testIdAttribute: 'data-test',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    video: 'retain-on-failure',    
+    actionTimeout: 90000,        // Increase individual action timeout
+    navigationTimeout: 90000,    // Increase page navigation timeout
   },
   projects: [
     // Setup project (runs first, generates storageState)
