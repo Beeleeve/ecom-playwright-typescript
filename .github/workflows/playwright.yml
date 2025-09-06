@@ -9,7 +9,7 @@ on:
 jobs:
   playwright:
     name: "Playwright Tests"
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
       # Checkout repository
