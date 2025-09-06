@@ -30,7 +30,6 @@ export class ProductPage {
         // Click the Add to Cart button
         await this.addToCartButton.click();
         await this.page.waitForLoadState('domcontentloaded');
-        await this.page.waitForLoadState('networkidle');
         await this.page.waitForTimeout(3000); // wait for any animations to complete
     }
     

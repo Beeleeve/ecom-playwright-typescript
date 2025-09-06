@@ -29,17 +29,14 @@ export class CartPage {
 
   async goToCart() {
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForLoadState('networkidle');
     expect(this.icon).toBeVisible({ timeout: 15000 });
     await this.icon.click();
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForLoadState('networkidle');
     await this.page.waitForSelector('table tbody tr', { state: 'visible', timeout: 15000 });
   }
 
   async getCartItems(): Promise<CartItem[]> {
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForLoadState('networkidle');
     await this.page.waitForSelector('table tbody tr', { state: 'visible', timeout: 15000 });
     const rowsCount = await this.cartRows.count();
     const items: CartItem[] = [];

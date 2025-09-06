@@ -131,7 +131,6 @@ export class ProductResultsPage {
       );
       // Wait for network idle after clicking
       await this.page.waitForLoadState('domcontentloaded');
-      await this.page.waitForLoadState('networkidle');
       await this.waitForProducts();
       // await this.page.waitForTimeout(3000); // wait for filtering to take effect
       return await this.productCards.filter({ has: this.page.locator('h5[data-test="product-name"]') }).count();

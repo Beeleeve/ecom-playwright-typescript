@@ -35,10 +35,10 @@ export default defineConfig({
   },
   projects: [
     // Setup project (runs first, generates storageState)
-    {
-      name: 'setup',
-      testMatch: '/hooks/global.setup.ts', // updated to .ts for TypeScript
-    },
+    // {
+    //   name: 'setup',
+    //   testMatch: '/hooks/global.setup.ts', // updated to .ts for TypeScript
+    // },
 
     // Logged-in user tests (depend on setup)
     // {
@@ -53,7 +53,7 @@ export default defineConfig({
     // },
     {
     name: 'e2e tests guest user',
-    testIgnore: ['hooks/global.setup.ts', '**/login/*.spec.ts'],
+    testIgnore: ['**/global.setup.ts', '**/login/*.spec.ts'],
       use: {
       ...devices['Desktop Chrome'],
       },
