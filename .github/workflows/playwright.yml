@@ -8,6 +8,7 @@ on:
 
 jobs:
   playwright:
+    timeout-minutes: 60
     name: "Playwright Tests"
     runs-on: ubuntu-latest
 
@@ -21,15 +22,6 @@ jobs:
           node-version: 22.16.0
           cache: "npm"
 
-      # Cache Playwright browsers
-      - name: Cache Playwright Browsers
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/ms-playwright
-          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-playwright-
-
       # Install project dependencies
       - name: Install dependencies
         run: |
@@ -42,7 +34,7 @@ jobs:
 
       # Run Playwright tests (logged-in user project)
       - name: Run Playwright tests
-        run: npm exec playwright test --project "e2e tests logged in user"
+        run: npx playwright test
 
       # Upload HTML report artifact
       - name: Upload Playwright Report
