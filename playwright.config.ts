@@ -14,7 +14,7 @@ export const STORAGE_STATE: string = path.join(
 );
 
 export default defineConfig({
-  testDir: './e2e/tests',
+  testDir: './e2e/tests/',
   outputDir: 'test-results',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
