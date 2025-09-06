@@ -52,10 +52,10 @@ export default defineConfig({
     //   }
     // },
     {
-      name: 'e2e tests guest user',
-      testIgnore: ['hooks/*.setup.ts', '/login/*.spec.ts'],
+    name: 'e2e tests guest user',
+    testIgnore: ['hooks/global.setup.ts', '**/login/*.spec.ts'],
       use: {
-        ...devices['Desktop Chrome'],
+      ...devices['Desktop Chrome'],
       },
     }
     // // Extra project for Chrome (optional)
