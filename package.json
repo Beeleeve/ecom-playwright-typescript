@@ -1,0 +1,28 @@
+{
+  "name": "ecom-playwright-typescript",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Beeleeve/ecom-playwright-typescript.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Beeleeve/ecom-playwright-typescript/issues"
+  },
+  "homepage": "https://github.com/Beeleeve/ecom-playwright-typescript#readme",
+  "description": "",
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^24.3.1"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.2"
+  }
+}
