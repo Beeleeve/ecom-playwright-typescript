@@ -1,7 +1,5 @@
 import { test as setup } from "@playwright/test";
-// import { LoginPage } from "../../pages/LoginPage.js";
-// import { STORAGE_STATE } from "../../playwright.config";
-import { LoginPage } from "@pages/LoginPage.js";
+import { LoginPage } from "@pages/LoginPage";
 import { STORAGE_STATE } from "@pwconfig";
 
 setup("Login", async ({ page }) => {
