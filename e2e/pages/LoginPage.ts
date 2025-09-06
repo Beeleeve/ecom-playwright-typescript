@@ -50,6 +50,10 @@ export class LoginPage {
    * Navigate to the login page
    */
   async goto(): Promise<void> {
+    await this.page.waitForLoadState('domcontentloaded');
+    await this.page.waitForLoadState('networkidle');
+    console.log('Navigating to login page...');
+    console.log(`Base URL:${config.baseUrl}`);
     if (!config.baseUrl) {
       throw new Error('BASE_URL is not configured in environment variables');
     }
