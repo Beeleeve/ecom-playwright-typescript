@@ -1,5 +1,4 @@
-import { Page, Locator, expect } from '@playwright/test';
-import { time } from 'console';
+import { Page, expect } from '@playwright/test';
 
 export interface CartItem {
   name: string;
@@ -11,55 +10,73 @@ export interface CartItem {
 
 export class CartPage {
   private readonly page: Page;
-  private readonly cartRows: Locator;
-  private readonly cartTotal: Locator;
-  private readonly icon: Locator;
   private readonly productPrice = '[data-test="product-price"]';
   private readonly productTitle = '[data-test="product-title"]';
   private readonly linePrice = '[data-test="line-price"]';
   private readonly productQuantity = '[data-test="product-quantity"]';
+  private readonly cartLink = 'nav-cart';
+  private readonly cartTotal = 'cart-total';
 
 
   constructor(page: Page) {
     this.page = page;
-    this.cartRows = page.locator('table tbody tr');
-    this.cartTotal = page.locator('[data-test="cart-total"]');
-    this.icon = page.getByTestId('nav-cart');
   }
 
   async goToCart() {
-    await this.page.waitForLoadState('domcontentloaded');
-    expect(this.icon).toBeVisible({ timeout: 15000 });
-    await this.icon.click();
-    await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForSelector('table tbody tr', { state: 'visible', timeout: 15000 });
+    await Promise.all([
+      this.page.waitForLoadState('domcontentloaded'),
+      this.page.getByTestId(this.cartLink).click()
+    ]);
   }
 
-  async getCartItems(): Promise<CartItem[]> {
-    await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForSelector('table tbody tr', { state: 'visible', timeout: 15000 });
-    const rowsCount = await this.cartRows.count();
-    const items: CartItem[] = [];
+  async getCartItems(): Promise<CartItem[]> {    
+    let rowCount = 0;
+    const cartRows = this.page.locator('table > tbody > tr');
+    await expect(async () => {      
+      await expect(cartRows.first()).toBeVisible({ timeout: 25000 });
+      rowCount = await cartRows.count();
+      expect(rowCount).toBeGreaterThan(0);
+    }).toPass();
+        
+    
 
-    for (let i = 0; i < rowsCount; i++) {
-      const row = this.cartRows.nth(i);
+    const items: CartItem[] = [];
+    for (let i = 0; i < rowCount; i++) {
+      const row = cartRows.nth(i);
 
       const name = (await row.locator(this.productTitle).textContent())?.trim();
-      const priceText = await row.locator(this.productPrice).textContent();
-      const linePriceText = await row.locator(this.linePrice).textContent();
-      const quantity = parseInt(await row.locator(this.productQuantity).inputValue());
+      const priceText = await row.getByTestId('product-price').textContent();
+      const linePriceText = await row.getByTestId('line-price').textContent();
+
+      const qtyInput = row.getByTestId('product-quantity');
+      await expect(qtyInput).toHaveValue(/[0-9]+/); // wait for a number
+      console.log('Name: ', name);
+      console.log('itemPrice: ', priceText);
+      console.log('Line price: ', linePriceText);
+      console.log('Qty: ', qtyInput);
+      let quantity = 1;
+      try {
+        const val = await qtyInput.inputValue();
+        quantity = val ? parseInt(val, 10) : parseInt((await qtyInput.getAttribute('min')) || '1', 10);
+      } catch {
+        quantity = 1;
+      }
+
       items.push({
         name: name || 'Unknown',
         price: parseFloat(priceText?.replace(/[^0-9.]/g, '') || '0'),
         linePrice: parseFloat(linePriceText?.replace(/[^0-9.]/g, '') || '0'),
-        quantity: quantity || 1,
+        quantity,
       });
+
+      console.log('Item in cart: ', items[i]);
     }
+
     return items;
   }
 
   async getCartTotal(): Promise<number> {
-    const totalText = await this.cartTotal.textContent();
+    const totalText = await this.page.getByTestId(this.cartTotal).textContent();
     return parseFloat(totalText?.replace(/[^0-9.]/g, '') || '0');
   }
 

@@ -7,7 +7,7 @@ test.describe("Valid Login", () => {
 
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
-    await loginPage.goto();
+    await page.goto('/', {waitUntil:'domcontentloaded'});
   });
 
   test("successful login with valid credentials from env file", async () => {
@@ -15,7 +15,7 @@ test.describe("Valid Login", () => {
 
     // Verify successful login
 
-  await expect(loginPage.getAccountTitle()).resolves.toHaveText("My account");
-  await expect(loginPage.getAccountDescription()).resolves.toHaveText("Here you can manage your profile, favorites and orders.");
+  expect(loginPage.getAccountTitle()).toEqual("My account");
+  expect(loginPage.getAccountDescription()).toEqual("Here you can manage your profile, favorites and orders.");
   });
 });

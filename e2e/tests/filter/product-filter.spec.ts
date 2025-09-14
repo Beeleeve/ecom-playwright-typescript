@@ -1,12 +1,13 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import ProductResultsPage from '@pages/ProductResultsPage';
+import { ProductsApiResponse } from 'e2e/model/productsAPI';
 
 test.describe('Product Category Filtering', () => {
   let resultsPage: ProductResultsPage;
 
   test.beforeEach(async ({ page}) => {
     resultsPage = new ProductResultsPage(page);
-    await page.goto('/');
+    await page.goto('/', {waitUntil:'domcontentloaded'});
   });
 
   // Categories to test
@@ -21,21 +22,36 @@ test.describe('Product Category Filtering', () => {
   for (const {name, minCount} of categories) {
     test(`filter by category: ${name}`, async () => {
       const initialCount = await resultsPage.beforeFilterCount();
-      const filteredCount = await resultsPage.applyFilters(name);
-      console.log(`Category "${name}" filtered count: ${filteredCount}`);
-      expect(filteredCount).toBeGreaterThanOrEqual(minCount);
-      expect(filteredCount).toBeLessThanOrEqual(initialCount);
+      const filteredResponse = await resultsPage.applyFilters(name);
+      expect(filteredResponse).not.toBeNull();
+      const jsonResponse = await filteredResponse?.json() as ProductsApiResponse;
+      const count = Array.isArray(jsonResponse.data) ? jsonResponse.data.length : 0;
+      console.log(`Category "${name}" filtered count: ${count}`);
+      expect(count).toBeGreaterThanOrEqual(minCount);
+      expect(count).toBeLessThanOrEqual(initialCount);
     });
   }
 
-  test('filter by multiple categories', async () => {
-    const initialCount = await resultsPage.beforeFilterCount();
-    const combinedCount = await resultsPage.applyFilters([
-      'Hand Tools',
-      'Power Tools',
-    ]);
+ test('filter by multiple categories', async () => {
+  const initialCount = await resultsPage.beforeFilterCount();
 
-    expect(combinedCount).toBeGreaterThan(0);
-    expect(combinedCount).toBeLessThanOrEqual(initialCount);
+  const response = await resultsPage.applyFilters([
+    'Safety Gear',
+    'Sander',
+  ]);
+
+  // Fail early if no response
+  expect(response, 'No response returned from applyFilters').toBeTruthy();
+
+  // Strongly type the parsed JSON
+  const { data }: ProductsApiResponse = await response!.json() as ProductsApiResponse;
+
+  // Ensure data is an array
+  expect(Array.isArray(data)).toBe(true);
+
+  const filteredCount = data.length;
+
+  expect(filteredCount).toBeGreaterThan(0);
+  expect(filteredCount).toBeLessThanOrEqual(initialCount);
   });
 });

@@ -1,34 +1,25 @@
 import { Page, Locator, Response } from '@playwright/test';
+import { Product } from 'e2e/model/models';
+import { ProductsApiResponse } from 'e2e/model/productsAPI';
 
-export interface ProductData {
-  name: string;
-  price: number;
-}
-
-export interface ApiResponseData {
-  data: { name: string; price: number }[];
-  total: number;
-}
 
 export class SearchPage {
-  private page: Page;
-  searchInput: Locator;
-  private searchButton: Locator;
-  private resultsHeading: Locator;
-  private productTitles: Locator;
-  private searchedProductNames: Locator;
-  private searchedProductPrices: Locator;
-  private noResultsMessage: Locator;
+  private readonly page: Page;
+  private readonly searchInput: Locator;
+  private readonly searchButton: Locator;
+  private readonly resultsHeading: Locator;
+  private readonly cardTitles: Locator;
+  private readonly productPrices: Locator;
+  private readonly noResultsMessage: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.searchInput = page.getByTestId('search-query');
-    this.searchButton = page.getByTestId('search-submit');
-    this.resultsHeading = page.locator('h3 span[data-test="search-term"]');
-    this.productTitles = page.getByTestId('product-name');
-    this.searchedProductNames = page.locator('a h5[data-test="product-name"]');
-    this.searchedProductPrices = page.locator('a span[data-test="product-price"]');
-    this.noResultsMessage = page.locator('div[data-test="no-results"]');
+    this.searchInput = page.getByPlaceholder("Search");
+    this.searchButton = page.getByRole("button", {name:"Search"});
+    this.resultsHeading = page.getByTestId("search-caption");
+    this.cardTitles = page.getByTestId('product-name');
+    this.productPrices = page.getByTestId("product-price");
+    this.noResultsMessage = page.getByTestId("no-results");
   }
 
   async searchProduct(query: string): Promise<Response> {
@@ -52,48 +43,43 @@ export class SearchPage {
 
   async getProductNames(): Promise<string[]> {
     await this.waitForSearchResults();
-    return this.searchedProductNames.allInnerTexts();
+    return this.cardTitles.allInnerTexts();
   }
 
   async getProductPrices(): Promise<string[]> {
     await this.waitForSearchResults();
-    return this.searchedProductPrices.allInnerTexts();
+    return this.productPrices.allInnerTexts();
   }
 
-  async getSearchResultCount(): Promise<number> {
+  async getSearchResultCount(partialText:string): Promise<number> {
     await this.waitForSearchResults();
-    return this.productTitles.filter({ hasText: /.*/ }).count();
+    return this.cardTitles.filter({ hasText: partialText }).count();
   }
 
   async hasProducts(): Promise<boolean> {
     await this.waitForSearchResults();
-    return this.productTitles.first().isVisible().catch(() => false);
+    return this.cardTitles.first().isVisible().catch(() => false);
   }
 
   async getResults(): Promise<string[]> {
     await this.waitForSearchResults();
-    const visibleTitles = this.productTitles.filter({ hasText: /.*/ });
+    const visibleTitles = this.cardTitles.filter({ hasText: /.*/ });
     return visibleTitles.allTextContents();
   }
 
   async getNoResultsMessage(): Promise<string> {
-    return this.noResultsMessage.innerText();
+    const text = await this.page.getByTestId('no-results').textContent();
+    return text?.trim() || '';
   }
 
-  /**
-   * Extract product data from API JSON
-   */
-  extractProductDataFromApi(data: ApiResponseData): ProductData[] {
+  extractProductDataFromApi(data: ProductsApiResponse): Product[] {
     return data.data.map((p) => ({
       name: p.name,
       price: p.price,
     }));
   }
 
-  /**
-   * Get product details (name + numeric price) from the UI
-   */
-  async getUiProductDetails(): Promise<ProductData[]> {
+  async getUiProductDetails(): Promise<Product[]> {
     const names = await this.getProductNames();
     const prices = await this.getProductPrices();
 

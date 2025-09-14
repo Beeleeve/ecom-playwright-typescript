@@ -1,0 +1,32 @@
+// cart-test-data.json
+[
+  {
+    "items": [
+      {
+        "product": {
+          "category": "Drill",
+          "name": "Cordless Drill 12V",
+          "price": 120
+        },
+        "quantity": 2,
+        "linePrice": 240
+      },
+      {
+        "product": { "category": "Hammer", "name": "Thor Hammer", "price": 80 },
+        "quantity": 1,
+        "linePrice": 80
+      }
+    ],
+    "totalPrice": 320
+  },
+  {
+    "items": [
+      {
+        "product": { "category": "Saw", "name": "Hand Saw", "price": 25 },
+        "quantity": 3,
+        "linePrice": 75
+      }
+    ],
+    "totalPrice": 75
+  }
+]

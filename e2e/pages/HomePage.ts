@@ -2,11 +2,11 @@ import { Page, Locator } from '@playwright/test';
 import config from '@config/environment';
 
 export class HomePage {
-  private page: Page;
-  private searchInput: Locator;
-  private searchButton: Locator;
-  private searchResultsHeading: Locator;
-  private productTitles: Locator;
+  private readonly page: Page;
+  private readonly searchInput: Locator;
+  private readonly searchButton: Locator;
+  private readonly searchResultsHeading: Locator;
+  private readonly productTitles: Locator;
   private readonly homeLink: Locator;
 
   constructor(page: Page) {
@@ -21,14 +21,14 @@ export class HomePage {
   /**
    * Navigate to the home page
    */
-  async goto(): Promise<void> {
+  async goto() {
     if (!config.baseUrl) {
       throw new Error('BASE_URL is not configured in environment variables');
     }
     await this.page.goto(config.baseUrl, { waitUntil: 'domcontentloaded' });
    }
     
-    async gotoHome(): Promise<void> {
+    async gotoHome() {
         await this.homeLink.click();
     }
 
@@ -36,7 +36,7 @@ export class HomePage {
    * Search for products
    * @param query - The search query
    */
-  async search(query: string): Promise<void> {
+  async search(query: string) {
     await this.searchInput.fill(query);
     await this.searchButton.click();
 

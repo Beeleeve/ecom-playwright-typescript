@@ -25,7 +25,7 @@ export default defineConfig({
   // reporter: 'allure-playwright',
 
   use: {
-    baseURL: process.env.BASE_URL || 'http://localhost:3000',
+    baseURL: process.env.BASE_URL || 'https://practicesoftwaretesting.com/',
     testIdAttribute: 'data-test',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',

@@ -1,37 +1,14 @@
 {
   "compilerOptions": {
     /* Language and Environment */
-    "target": "ES2024",                          // Modern JS output
-    "lib": ["ES2024", "DOM"],                    // Include DOM + modern JS APIs
-    "module": "CommonJS",                        // Or "ESNext" if using ESM
-    "moduleResolution": "Node",                  // Node-style resolution
+    "target": "ES2022",                      // Include DOM + modern JS APIs
+    "module": "NodeNext",                        // Or "ESNext" if using ESM
+    "moduleResolution": "NodeNext",               // Node-style resolution
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,                     // Allow default imports from CJS
-    "allowSyntheticDefaultImports": true,        // For smoother interop
-    "resolveJsonModule": true,                   // Import .json files as modules
-    "types": ["node", "playwright"],             // Include Playwright + Node types
-
-    /* Type Checking */
-    "strict": true,                              // Enable all strict checks
-    "noImplicitAny": true,                       // Disallow implicit any
-    "strictNullChecks": true,                    // Null/undefined must be handled
-    "strictFunctionTypes": true,                 // Safer function type checking
-    "strictBindCallApply": true,                 // Check bind/call/apply args
-    "noImplicitThis": true,                      // Disallow implicit this
-    "alwaysStrict": true,                        // Emit "use strict"
-    "noUnusedLocals": true,                      // Warn on unused locals
-    "noUnusedParameters": true,                  // Warn on unused params
-    "noImplicitReturns": true,                   // All code paths must return
-    "noFallthroughCasesInSwitch": true,          // Prevent accidental fallthrough
-
-    /* Emit & Build */
-    "outDir": "dist",                            // Output folder
-    "rootDir": ".",                            // Source folder
-    "sourceMap": true,                           // Generate .map files
-    "declaration": true,                         // Generate .d.ts files
-    "declarationMap": true,                      // Map .d.ts to source
-    "incremental": true,                         // Faster rebuilds
-    "skipLibCheck": true,                        // Skip type checking .d.ts files
-
+    "skipLibCheck": true,
+    "noEmit": true,
     /* Paths & Aliases (optional) */
     "baseUrl": ".",                              // Base for non-relative imports
     "paths": {
@@ -41,6 +18,6 @@
       "@pwconfig": ["playwright.config.ts"]
     }
   },
-  "include": ["e2e", "config", "tests", "playwright.config.ts"],
+  "include": ["e2e", "config", "tests", "playwright.config.ts", "**/*.ts", "**/*.tsx", "**/*.js", "**/*.mjs"],
   "exclude": ["node_modules", "dist"]
 }

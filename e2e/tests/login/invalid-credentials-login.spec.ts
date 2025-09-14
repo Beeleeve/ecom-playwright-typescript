@@ -7,22 +7,22 @@ test.describe("Invalid Credentials Login", () => {
   let loginPage: LoginPage;
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
-    await loginPage.goto();
+    await page.goto('/', {waitUntil:'domcontentloaded'});
   });
 
   test("login fails with both invalid email and password", async () => {
     await loginPage.signIn("wrong@example.com", "wrongpassword");
-    await expect(loginPage.getErrorMessage()).resolves.toContainText('Invalid email or password');
+    expect(loginPage.getErrorMessage()).toEqual('Invalid email or password');
   });
 
   test("login fails with empty credentials", async () => {
     await loginPage.signIn("", "");
-    await expect(loginPage.getEmailError()).resolves.toContainText("Email is required");
-    await expect(loginPage.getPasswordError()).resolves.toContainText("Password is required");
+    expect(loginPage.getEmailError()).toEqual("Email is required");
+    expect(loginPage.getPasswordError()).toEqual("Password is required");
   });
 
   test("login fails with malformed email and invalid password", async () => {
     await loginPage.signIn("notanemail", "wrongpass");
-    await expect(loginPage.getEmailError()).resolves.toContainText("Email format is invalid");
+    expect(loginPage.getEmailError()).toEqual("Email format is invalid");
   });
 });

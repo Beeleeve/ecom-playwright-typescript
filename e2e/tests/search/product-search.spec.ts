@@ -1,5 +1,7 @@
 import { test, expect, Response } from '@playwright/test';
-import { SearchPage, ProductData, ApiResponseData } from '@pages/SearchPage';
+import { SearchPage} from '@pages/SearchPage';
+import { ProductsApiResponse } from 'e2e/model/productsAPI';
+import { Product } from 'e2e/model/models';
 
 interface ProductsData {
   name: string;
@@ -19,20 +21,20 @@ test.describe('Product Search', () => {
 
   test.beforeEach(async ({ page }) => {
     searchPage = new SearchPage(page);
-    await page.goto('/');
-    await searchPage.searchInput.waitFor({ state: 'visible', timeout: 20000 });
+    await page.goto('/', {waitUntil:'domcontentloaded'});
   });
 
   products.forEach((product) => {
     test(`search for ${product.name}`, async () => {
       const response: Response = await searchPage.searchProduct(product.name);
-      const data: ApiResponseData = await response.json();
+      const data: ProductsApiResponse = await response.json() as ProductsApiResponse;
+
 
       console.log(`API response for ${product.name}:`, data);
       console.log('Number of products from API:', data.total);
 
-      const apiProducts: ProductData[] = searchPage.extractProductDataFromApi(data);
-      const uiProducts: ProductData[] = await searchPage.getUiProductDetails();
+      const apiProducts: Product[] = searchPage.extractProductDataFromApi(data);
+      const uiProducts: Product[] = await searchPage.getUiProductDetails();
 
       if (product.expectResults) {
         for (let i = 0; i < apiProducts.length; i++) {
@@ -42,10 +44,11 @@ test.describe('Product Search', () => {
       } else {
         expect(apiProducts.length).toBe(0);
         expect(uiProducts.length).toBe(0);
-        expect(await searchPage.getNoResultsMessage()).toEqual(
-          'There are no products found.'
-        );
+        const noResultsMsg = await searchPage.getNoResultsMessage();
+        expect(noResultsMsg).toBe('There are no products found.');
+
       }
     });
   });
+
 });

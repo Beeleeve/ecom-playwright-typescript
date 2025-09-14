@@ -1,43 +1,81 @@
-import { Page, Locator, expect } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
+
 
 export class ProductPage {
     
-    private addToCartButton: Locator;
-    cartTotal: Locator;
-    totalCartItems: Locator;
-    productPrice: Locator;
-    productName: Locator;
-    
-    private readonly quantity: Locator;
-    private readonly page: Page;
+  private readonly page: Page;
+  private readonly quantityInput: Locator;
+  private readonly unitPrice: Locator;
+  private readonly productName: Locator;
+  private readonly cartLink: Locator;
+  private readonly increaseButton: Locator;
+  private readonly cartQuantity: Locator;
 
-    constructor(page: Page) {   
-        this.page = page;
-        this.addToCartButton = page.getByTestId('add-to-cart');
-        this.totalCartItems = page.locator('table tbody tr');
-        this.cartTotal = page.getByTestId('cart-total');
-        this.productPrice = page.getByTestId('product-price');
-        this.productName = page.getByTestId('product-name');
-        this.quantity = page.getByTestId('quantity');
-    }
+  constructor(page: Page) {
+    this.page = page;
+    this.quantityInput = page.getByTestId("quantity");
+    this.unitPrice = page.getByTestId("unit-price");
+    this.productName = page.getByTestId("product-name");
+    this.cartLink = page.getByTestId("nav-cart");
+    this.increaseButton = page.getByTestId("increase-quantity");
+    this.cartQuantity = page.getByTestId("cart-quantity");
+  }
+
 
     async enterQuantity(quantity: number) {
-        await this.quantity.fill(''); // Clear existing value
-        await this.quantity.fill(String(quantity));
+        const input = this.quantityInput;
+        const increaseBtn = this.increaseButton;
+        await expect(increaseBtn).toBeVisible({ timeout: 15000 });
+        await expect(input).toBeVisible({ timeout: 15000 });
+        await expect(input).toBeEnabled();
+        await input.clear();
+        await input.fill(String(quantity));
+        await expect(input).toHaveValue(String(quantity));
+        // const currentValue = parseInt(await input.inputValue(), 10) || 0;
+        // if (quantity > currentValue) {
+        //     const clicksNeeded = quantity - currentValue;
+        //     for (let i = 0; i < clicksNeeded; i++) {
+        //     await increaseBtn.click();
+        //     // Optional: wait for the input to update after each click
+        //     await expect(input).toHaveValue(String(currentValue + i + 1), { timeout: 3000 });
+        //     }
+        // }            
     }
 
-    async addToCart(): Promise<void> {
-        // Click the Add to Cart button
-        await this.addToCartButton.click();
-        await this.page.waitForLoadState('domcontentloaded');
-        await this.page.waitForTimeout(3000); // wait for any animations to complete
+    async addToCartAndWaitForQuantity(expectedQuantity: number) {
+
+        // await expect(async () => {
+        //     const addToCartButton = this.page.getByRole('button', { name: /add to cart/i });
+        //     const cartIcon = this.page.getByTestId(this.cartLink);
+        //     if (!(await cartIcon.isVisible())) {
+        //         console.log('Cart icon not visible');
+        //     }
+        //     await addToCartButton.click();
+        //     await expect(cartIcon).toBeVisible({ timeout: 5000 });
+        //     await expect(this.page.getByTestId('cart-quantity'))
+        //     .toHaveText(String(expectedQuantity), { timeout: 15000 });
+
+        // }).toPass()
+        await Promise.all([
+            this.page.waitForResponse(r =>
+            r.url().includes('/carts') && r.status() === 200
+            ),
+            this.page.getByRole('button', { name: "Add to cart" }).click()
+        ]);    
+        await expect(this.cartQuantity)
+            .toHaveText(String(expectedQuantity), { timeout: 35000 });
     }
+
     
-    async getProductPrice(): Promise<string | null> {
-        return await this.productPrice.textContent().then((text) => text?.replace(/[^0-9.]/g, '') || '0');
+    async getProductPrice(): Promise<string> {
+        return await this.unitPrice.textContent().then((text) => text?.replace(/[^0-9.]/g, '') || '0');
     }
-    async getProductName(): Promise<string | null> {
-        return await this.productName.textContent();
+
+    async getProductName(): Promise<string> {
+        const nameLocator = this.productName;
+        await expect(nameLocator).toBeVisible({ timeout: 15000 });
+        await expect(this.page).toHaveURL(/\/product\//);
+        return (await nameLocator.textContent())?.trim() || '';
     }
 
 }

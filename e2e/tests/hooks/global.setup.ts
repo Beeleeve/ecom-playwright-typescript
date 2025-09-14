@@ -5,7 +5,7 @@ import { STORAGE_STATE } from "@pwconfig";
 setup("Login", async ({ page }) => {
   const loginPage = new LoginPage(page);
 
-  await page.goto('/');
+  await page.goto('/', {waitUntil:'domcontentloaded'});
   await loginPage.signInWithValidCredentials();
   console.log("Login successful, saving storage state...");
   await page.context().storageState({ path: STORAGE_STATE });
