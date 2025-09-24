@@ -28,16 +28,9 @@ jobs:
           npm ci
           npm install dotenv
 
-      # Install Chromium binary
-      - name: Install Chromium
-        run: npx playwright install chromium
-
       # Install system dependencies for Chromium/Chrome (Ubuntu)
-      - name: Install Chromium dependencies
-        run: npx playwright install-deps chromium
-
-      - name: Lint and typecheck
-        run: npx eslint && tsc --noEmit
+      - name: Install Chromium and OS dependencies
+        run: npx playwright install --with-deps chromium
 
       # Run Playwright tests (logged-in user project)
       - name: Run Playwright tests
@@ -46,7 +39,7 @@ jobs:
       # Upload HTML report artifact
       - name: Upload Playwright Report
         uses: actions/upload-artifact@v4
-        if: ${{ always() }}
+        if: ${{ !cancelled() }}
         with:
           name: playwright-report
           path: playwright-report/
