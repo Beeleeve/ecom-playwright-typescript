@@ -1,4 +1,4 @@
-# ecom-playwright-js
+# ecom-playwright-typescript
 Sample Web and API automated tests using Playwright and Javascript
 * search feature: I tests intercept api calls and compare api and ui search results  such as product name and price.
 * Filter: UI tests to filter by one or more categories

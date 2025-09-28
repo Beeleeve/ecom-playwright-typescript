@@ -51,13 +51,11 @@ export class LoginPage {
    */
   async goto() {
     await this.page.waitForLoadState('domcontentloaded');
-    await this.page.waitForLoadState('networkidle');
-    console.log('Navigating to login page...');
-    console.log(`Base URL:${config.baseUrl}`);
     if (!config.baseUrl) {
       throw new Error('BASE_URL is not configured in environment variables');
     }
     await this.page.goto(`${config.baseUrl}/auth/login`);
+
   }
 
   /**
@@ -91,6 +89,11 @@ export class LoginPage {
       );
     }
     await this.signIn(config.user.email, config.user.password);
+  }
+
+  async getLoginPageHeading(): Promise<string> {
+    const heading = this.page.getByRole('heading', { level: 3 });
+    return (await heading.textContent())?.trim() || '';
   }
 }
 

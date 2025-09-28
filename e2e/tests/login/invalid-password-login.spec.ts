@@ -8,7 +8,9 @@ test.describe("Invalid Password Login", () => {
 
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
-    await page.goto('/', {waitUntil:'domcontentloaded'});
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    await loginPage.goto();
+    expect(await loginPage.getLoginPageHeading()).toBe("Login");
   });
 
   test("login fails with wrong password", async () => {
@@ -19,11 +21,11 @@ test.describe("Invalid Password Login", () => {
       );
     }
     await loginPage.signIn(config.user.email, "wrongpassword");
-    expect(loginPage.getErrorMessage()).toEqual("Invalid email or password");
+    expect(await loginPage.getErrorMessage()).toEqual("Invalid email or password");
   });
 
   test("login fails with empty email", async () => {
     await loginPage.signIn("", "pass123");
-    expect(loginPage.getEmailError()).toEqual("Email is required");
+    expect(await loginPage.getEmailError()).toEqual("Email is required");
   });
 });
