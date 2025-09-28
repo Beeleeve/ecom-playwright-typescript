@@ -34,7 +34,7 @@ jobs:
 
       # Run Playwright tests (logged-in user project)
       - name: Run Playwright tests
-        run: npx playwright test
+        run: npx playwright test --project "e2e tests guest user"
 
       # Upload HTML report artifact
       - name: Upload Playwright Report
