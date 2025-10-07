@@ -1,5 +1,5 @@
 # ecom-playwright-typescript
-Sample Web and API automated tests using Playwright and Javascript
+Sample Web and API automated tests using Playwright and Typescript
 * [Sample Website](https://practicesoftwaretesting.com/)
 
 * **Search feature**: Intercepts API calls and compares API and UI search results such as product name and price.
