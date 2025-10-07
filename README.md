@@ -44,9 +44,9 @@ Intercept and validate API requests/responses to ensure UI and backend data matc
 
 ## Project Structure
 
-- **pages/**: Page classes and reusable methods
+- **e2e/pages/**: Page classes and reusable methods
 - **.config/.env.*/**: Configuration files for different environments (development, production, testing).
-- **tests/**: End-to-end and integration tests using Playwright.
+- **e2e/tests/**: End-to-end and integration tests using Playwright.
 
 ## Configuration
 
